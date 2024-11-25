@@ -4,9 +4,11 @@
 
 ## [Unreleased]
 
+## 0.1.1
+
 ### Added
-- Highlighting cells and pieces
-- Movement calculation for queen rook and bishop
+- Highlighting cells and pieces in different colors
+- Movement calculation for queen rook bishop and horse
 - abc123 display
 - helper functions in board
 

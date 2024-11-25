@@ -1,5 +1,5 @@
 from colorama import Fore, Style, init
-
+from enum import Enum
 class Position:
     def __init__(self, x, y):
         self.x = x
@@ -22,3 +22,14 @@ class Util:
     def print_warning(self, message):
         init(autoreset=True)
         print(Fore.YELLOW + Style.BRIGHT + "Warning: " + message)
+
+class Color(Enum):
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    ORANGE = "\033[38;5;214m"
+    NONE = ""
+
+    def apply(self, text: str) -> str:
+        return f"{self.value}{text}\033[0m"

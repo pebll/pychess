@@ -21,8 +21,8 @@ pieces = board.get_pieces()
 print()
 for piece in pieces:
     print(f"piece: \n{str(piece)}")
-    moves = board.get_possible_moves(piece=piece)
-    board.highlight_cells(moves)
+    board._reset_highlights()
+    board.highlight_possible_moves(piece)
     print(board)
     print()
 

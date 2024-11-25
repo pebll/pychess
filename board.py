@@ -1,5 +1,5 @@
 
-from utils import Position, Util
+from utils import Position, Util, Color
 from pieces import Piece, PieceType
 from typing import Optional, List, Any
 
@@ -7,7 +7,7 @@ from typing import Optional, List, Any
 class Board:
     def __init__(self):
         self.board = [[None for i in range(8)] for j in range(8)]
-        self.highlights = [[False for i in range(8)] for j in range(8)]
+        self.highlights = [[Color.NONE for i in range(8)] for j in range(8)]
         self.util = Util()
         self.movement = Movement(self)
         #self._setup_board()
@@ -31,11 +31,17 @@ class Board:
     def get_possible_moves(self, piece: Piece):
         return self.movement.get_possible_moves(piece)
 
-    def highlight_cells(self, cells: List[Position]):
-        self._reset_highlights()
+    def highlight_cells(self, cells: List[Position], color = Color.YELLOW):
         for cell in cells:
-            self._set_cell(True, cell, self.highlights)
-    
+            self._set_cell(color, cell, self.highlights)
+
+    def highlight_possible_moves(self, piece: Piece):
+        moves = self.get_possible_moves(piece)
+        self.highlight_cells([piece.pos], Color.BLUE)
+        for move in moves:
+            color = Color.GREEN if not self.get_cell(move) else Color.RED
+            self.highlight_cells([move], color)
+
     def _all_positions(self) -> List[Position]:
         positions = []
         for x in range(8):
@@ -45,7 +51,7 @@ class Board:
     
     def _reset_highlights(self):
         for pos in self._all_positions():
-            self._set_cell(False, pos, self.highlights)
+            self._set_cell(Color.NONE, pos, self.highlights)
 
     def _set_cell(self, value : Any, pos: Position, board: List = None):
         board = self.board if not board else board
@@ -90,18 +96,11 @@ class Board:
             string += f" {str(y)} |"
             for x, piece in enumerate(row):
                 highlight = self.get_cell(Position(x, y), self.highlights)
-                if highlight:
-                    start_format = "\033[1;33m"  # Bold and orange
-                    end_format = "\033[0m"  # Reset to default
-                else:
-                    start_format = ""
-                    end_format = ""
                 if piece:
-                    string += f"{start_format}{str(piece)} {end_format}"
+                    cell = f"{str(piece)} "
                 else:
-                    cell = "◉︎" if highlight else "  "
-                    string += f"{start_format}{cell}{end_format}"
-                string += "|"
+                    cell = "◉︎ " if highlight != Color.NONE else "  "
+                string += f"{highlight.apply(cell)}|"
             string = string + "\n"
         string += "    a  b  c  d  e  f  g  h"
         return string 
@@ -123,8 +122,24 @@ class Movement():
             cells.extend(self._get_cells_in_direction(piece.pos, Position(1,-1), piece.white))
             cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,1), piece.white))
             cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,-1), piece.white))
+        if params.horse:
+            horse_offsets = [Position(2, 1), Position(2, -1), Position(-2, 1), Position(-2, -1),
+                             Position(1, 2), Position(1, -2), Position(-1, 2), Position(-1, -2)]
+            cells.extend(self._get_cells_at_offsets(piece.pos, horse_offsets, piece.white))
         return cells
 
+    def _get_cells_at_offsets(self, start_pos: Position, offsets : List[Position], white: bool) -> List[Position]:
+        cells = []
+        for offset in offsets:
+            pos = start_pos + offset
+            if not pos.is_valid():
+                continue
+            piece = self.board.get_cell(pos)
+            if piece and piece.white == white:
+                continue
+            cells.append(pos)
+        return cells
+    
     def _get_cells_in_direction(self, start_pos: Position, direction: Position, white: bool) -> List[Position]:
         pos = start_pos
         cells = []
@@ -151,6 +166,9 @@ class MovementParameters():
         self.diagonal = False
         if piece_type == PieceType.BISHOP or piece_type == PieceType.QUEEN:
             self.diagonal = True
+        self.horse = False
+        if piece_type == PieceType.KNIGHT:
+            self.horse = True
 
 
 
