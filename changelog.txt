@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Added
+- Highlighting cells and pieces
+- Movement calculation for queen rook and bishop
+- abc123 display
+- helper functions in board
 
 ## 0.1.0 - 25-11-2024
 
