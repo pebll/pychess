@@ -1,0 +1,11 @@
+
+
+# Changelog
+
+## [Unreleased]
+
+
+## 0.1.0 - 25-11-2024
+
+### Added
+- Base implementation of board and piece
