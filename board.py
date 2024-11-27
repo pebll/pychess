@@ -11,8 +11,6 @@ class Board:
         self.util = Util()
         self.movement = Movement(self)
         self.print_reverse = False
-        #self._setup_board()
-
     
     def get_cell(self, pos : Position, board: List = None) -> Optional[Piece]:
         board = self.board if not board else board
@@ -66,7 +64,7 @@ class Board:
         piece.pos = pos
         return True
     
-    def _setup_board(self):
+    def setup_board(self):
         # Initialize white pieces
         self._place_piece(Piece(PieceType.ROOK, True), Position(0, 0))
         self._place_piece(Piece(PieceType.KNIGHT, True), Position(1, 0))

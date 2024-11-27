@@ -9,6 +9,9 @@ class Position:
         if isinstance(other, Position):
             return Position(self.x + other.x, self.y + other.y)
         raise TypeError("Can only add Position to Position")
+    
+    def __str__(self) -> str:
+        return f"({self.x}, {self.y})"
 
     def is_valid(self) -> bool: 
         if self.x < 0 or self.x > 7 or self.y < 0 or self.y > 7:

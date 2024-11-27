@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### Added
+
+- Game class
+- Keybidings
+- Basic pointer class
+
 ## 0.1.2 - 2024-11-27
 
 ### Added
