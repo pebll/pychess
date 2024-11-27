@@ -113,15 +113,15 @@ class Movement():
         params = MovementParameters(piece_type=piece.type)
         cells = []
         if params.horizontal:
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(1,0), piece.white))
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,0), piece.white))
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(0,1), piece.white))
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(0,-1), piece.white))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(1,0), piece.white, params.limited))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,0), piece.white, params.limited))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(0,1), piece.white, params.limited))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(0,-1), piece.white, params.limited))
         if params.diagonal:
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(1,1), piece.white))
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(1,-1), piece.white))
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,1), piece.white))
-            cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,-1), piece.white))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(1,1), piece.white, params.limited))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(1,-1), piece.white, params.limited))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,1), piece.white, params.limited))
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(-1,-1), piece.white, params.limited))
         if params.horse:
             horse_offsets = [Position(2, 1), Position(2, -1), Position(-2, 1), Position(-2, -1),
                              Position(1, 2), Position(1, -2), Position(-1, 2), Position(-1, -2)]
@@ -140,7 +140,7 @@ class Movement():
             cells.append(pos)
         return cells
     
-    def _get_cells_in_direction(self, start_pos: Position, direction: Position, white: bool) -> List[Position]:
+    def _get_cells_in_direction(self, start_pos: Position, direction: Position, white: bool, limited = False) -> List[Position]:
         pos = start_pos
         cells = []
         while True: 
@@ -155,20 +155,26 @@ class Movement():
                     cells.append(pos)
                     break
             cells.append(pos)
+            if limited:
+                break
         return cells
 
 
 class MovementParameters():
     def __init__(self, piece_type: PieceType):
         self.horizontal = False
-        if piece_type == PieceType.ROOK or piece_type == PieceType.QUEEN:
+        if piece_type == PieceType.ROOK or piece_type == PieceType.QUEEN or piece_type == PieceType.KING:
             self.horizontal = True
         self.diagonal = False
-        if piece_type == PieceType.BISHOP or piece_type == PieceType.QUEEN:
+        if piece_type == PieceType.BISHOP or piece_type == PieceType.QUEEN or piece_type == PieceType.KING:
             self.diagonal = True
         self.horse = False
         if piece_type == PieceType.KNIGHT:
             self.horse = True
+        self.limited = False
+        if piece_type == PieceType.KING:
+            self.limited = True
+        
 
 
 

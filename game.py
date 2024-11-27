@@ -1,20 +1,16 @@
 from board import Board
 from utils import Position
 from pieces import Piece, PieceType
-
+from random import sample
 
 pos1 = Position(1,2)
 board = Board()
 
-
-board._place_piece(Piece(PieceType.ROOK, True), Position(6, 2))
-board._place_piece(Piece(PieceType.KNIGHT, True), Position(6, 3))
-board._place_piece(Piece(PieceType.BISHOP, True), Position(2, 7))
-board._place_piece(Piece(PieceType.QUEEN, True), Position(3, 2))
-board._place_piece(Piece(PieceType.ROOK, False), Position(1, 1))
-board._place_piece(Piece(PieceType.KNIGHT, False), Position(4, 4))
-board._place_piece(Piece(PieceType.BISHOP, False), Position(6, 5))
-board._place_piece(Piece(PieceType.QUEEN, False), Position(4, 2))
+positions = sample(board._all_positions(), 18)
+pieces = [PieceType.KING, PieceType.BISHOP, PieceType.QUEEN, PieceType.ROOK, PieceType.KNIGHT, PieceType.PAWN, PieceType.PAWN, PieceType.PAWN, PieceType.PAWN]
+for i, type in enumerate(pieces):
+    for j, white in enumerate([True, False]):
+        board._place_piece(Piece(type, white), positions[2 * i + j])
 
 print(board)
 pieces = board.get_pieces()
