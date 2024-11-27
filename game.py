@@ -6,7 +6,7 @@ from random import sample
 pos1 = Position(1,2)
 board = Board()
 
-random_board = False
+random_board = 0
 
 if random_board:
     positions = sample(board._all_positions(), 18)
@@ -18,17 +18,21 @@ if random_board:
 else:
     board._setup_board()
 
+board._place_piece(Piece(PieceType.KING, True), Position(2, 5))
+board._place_piece(Piece(PieceType.KING, False), Position(5, 2))
+
 print(board)
-board.print_reverse = True
+board.print_reverse = False
 
 pieces = board.get_pieces()
 print()
 for piece in pieces:
-    print(f"piece: \n{str(piece)}")
-    board._reset_highlights()
-    board.highlight_possible_moves(piece)
-    print(board)
-    print()
+    if piece.type == PieceType.PAWN:
+        print(f"piece: \n{str(piece)}")
+        board._reset_highlights()
+        board.highlight_possible_moves(piece)
+        print(board)
+        print() 
 
 
 

@@ -4,7 +4,17 @@
 
 ## [Unreleased]
 
-## 0.1.1
+## 0.1.2 - 2024-11-27
+
+### Added
+- Basic King Movement
+- Reverse print board
+- Basic Pawn Movement
+
+### Fixed
+- abc123 display 
+
+## 0.1.1 - 2024-11-25
 
 ### Added
 - Highlighting cells and pieces in different colors
@@ -12,7 +22,7 @@
 - abc123 display
 - helper functions in board
 
-## 0.1.0 - 25-11-2024
+## 0.1.0 - 2024-11-25
 
 ### Added
 - Base implementation of board and piece

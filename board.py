@@ -143,36 +143,47 @@ class Movement():
             horse_offsets = [Position(2, 1), Position(2, -1), Position(-2, 1), Position(-2, -1),
                              Position(1, 2), Position(1, -2), Position(-1, 2), Position(-1, -2)]
             cells.extend(self._get_cells_at_offsets(piece.pos, horse_offsets, piece.white))
+        if params.pawn:
+            direction = 1 if piece.white else -1
+            start_y = 1 if piece.white else 6
+            distance = 2 if piece.pos.y == start_y else 1
+            aggresive_pawn_offsets = [Position(1, direction), Position(-1, direction)]
+            cells.extend(self._get_cells_in_direction(piece.pos, Position(0, direction), piece.white, limited = distance, passive = True))
+            cells.extend(self._get_cells_at_offsets(piece.pos, aggresive_pawn_offsets, piece.white, stop_on_empty=True))
         return cells
 
-    def _get_cells_at_offsets(self, start_pos: Position, offsets : List[Position], white: bool) -> List[Position]:
+    def _get_cells_at_offsets(self, start_pos: Position, offsets : List[Position], white: bool, stop_on_empty = False) -> List[Position]:
         cells = []
         for offset in offsets:
             pos = start_pos + offset
             if not pos.is_valid():
                 continue
             piece = self.board.get_cell(pos)
-            if piece and piece.white == white:
-                continue
+            if piece:
+                if piece.white == white:
+                    continue
+            else:
+                if stop_on_empty:
+                    continue
             cells.append(pos)
         return cells
     
-    def _get_cells_in_direction(self, start_pos: Position, direction: Position, white: bool, limited = False) -> List[Position]:
+    def _get_cells_in_direction(self, start_pos: Position, direction: Position, white: bool, limited = 0, passive = False) -> List[Position]:
         pos = start_pos
         cells = []
-        while True: 
+        while True:
             pos += direction
             if not pos.is_valid():
                 break
             piece = self.board.get_cell(pos)
             if piece:
-                if piece.white == white: 
+                if passive or piece.white == white: 
                     break
                 else:
                     cells.append(pos)
                     break
             cells.append(pos)
-            if limited:
+            if limited > 0 and len(cells) == limited:
                 break
         return cells
 
@@ -188,9 +199,12 @@ class MovementParameters():
         self.horse = False
         if piece_type == PieceType.KNIGHT:
             self.horse = True
-        self.limited = False
+        self.limited = 0
         if piece_type == PieceType.KING:
-            self.limited = True
+            self.limited = 1
+        self.pawn = False
+        if piece_type == PieceType.PAWN:
+            self.pawn = True
         
 
 

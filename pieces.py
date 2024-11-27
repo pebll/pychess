@@ -1,5 +1,6 @@
 from utils import Position
 from enum import Enum
+from typing import Optional
 
 class PieceType(Enum):
     KING = 1
@@ -18,7 +19,7 @@ class Piece():
     def __init__(self, type: PieceType, white: bool):
         self.type = type
         self.white = white
-        self.pos = None
+        self.pos : Optional[Position] = None
     
     def __str__(self):
         unicode_pieces = {
