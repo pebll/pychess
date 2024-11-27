@@ -10,6 +10,7 @@ class Board:
         self.highlights = [[Color.NONE for i in range(8)] for j in range(8)]
         self.util = Util()
         self.movement = Movement(self)
+        self.print_reverse = False
         #self._setup_board()
 
     
@@ -92,18 +93,34 @@ class Board:
     
     def __str__(self):
         string = ""
-        for y, row in enumerate(self.board):
-            string += f" {str(y)} |"
-            for x, piece in enumerate(row):
-                highlight = self.get_cell(Position(x, y), self.highlights)
+        rows = enumerate(self.board)
+        if self.print_reverse:
+            rows = enumerate(reversed(self.board))
+        for y, row in rows:
+            if not self.print_reverse:
+                string += f" {str(len(self.board) - y)} |"
+            else:
+                string += f" {str(y+1)} |"
+            columns = enumerate(row)
+            if self.print_reverse:
+                columns = enumerate(reversed(row))
+            for x, piece in columns:
+                if self.print_reverse:
+                    highlight = self.get_cell(Position(len(row) - 1 - x, len(self.board) - 1 - y), self.highlights)
+                else:
+                    highlight = self.get_cell(Position(x, y), self.highlights)
                 if piece:
                     cell = f"{str(piece)} "
                 else:
                     cell = "◉︎ " if highlight != Color.NONE else "  "
                 string += f"{highlight.apply(cell)}|"
             string = string + "\n"
-        string += "    a  b  c  d  e  f  g  h"
-        return string 
+        if self.print_reverse:
+            string += "    h  g  f  e  d  c  b  a"
+        else:
+            string += "    a  b  c  d  e  f  g  h"
+        return string
+
 class Movement():
     def __init__(self, board : Board):
         self.board = board
